@@ -127,3 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+Stockfish/stockfish_13_win_x64_bmi2.exe
