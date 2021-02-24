@@ -60,6 +60,7 @@ def convert_board(board):
 
     for sqr in ALL_SQUARES:
         if board.is_attacked_by(chess.WHITE, sqr):
+            
             r, c = convert_sqr(sqr)
             num_atcks = len(board.attackers(chess.WHITE, sqr))
             board_rep[6][r][c] = num_atcks/2
@@ -67,22 +68,29 @@ def convert_board(board):
             r, c = convert_sqr(sqr)
             num_atcks = len(board.attackers(chess.BLACK, sqr))
             board_rep[7][r][c] = num_atcks/2
+    if board.turn == chess.WHITE:
+        board_rep2 = np.append(board_rep.reshape(-1), [2]) #first 513 cols are x, then y 
+    else: 
+        board_rep2 = np.append(board_rep.reshape(-1), [2]) 
+    return board_rep2
 
-    return board_rep
 
 
 def get_data():
     data_list = []
 
-    for _ in range(15000):
+    for _ in range(16000):
         board = generate_rand_board()
         eval_ = stockfish_evaluation(board)
-        x = np.append(convert_board(board).reshape(-1), [eval_]) #first 512 cols are x, then y 
+        if board.turn == chess.WHITE:
+            x = np.append(convert_board(board).reshape(1), [eval_]) #first 513 cols are x, then y 
+        else: 
+            x = np.append(convert_board(board).reshape(-1), [eval_]) 
         data_list.append(x)
 
     df = pd.DataFrame(data_list)
 
-    stockfish_data = df.to_csv('Data/stockfish_depth0d.csv', index = False, header = False) 
+    stockfish_data = df.to_csv('Data/stockfish_depth0f.csv', index = False, header = False) 
 
 
 if __name__ == "__main__":
