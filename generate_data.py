@@ -4,6 +4,10 @@ import numpy as np
 import pandas as pd
 import random
 
+
+# https://python-chess.readthedocs.io/en/latest/
+# https://python-chess.readthedocs.io/en/latest/core.html
+
 STOCKFISH = chess.engine.SimpleEngine.popen_uci("Stockfish/stockfish_13_win_x64_bmi2")
 ALL_SQUARES = chess.SquareSet(chess.BB_ALL)
 
@@ -27,6 +31,7 @@ def generate_rand_board():
             return old_board
 
     return board
+
 
 def convert_sqr(sqr):
     """
@@ -65,10 +70,11 @@ def convert_board(board):
 
     return board_rep
 
+
 def get_data():
     data_list = []
 
-    for _ in range(2000):
+    for _ in range(15000):
         board = generate_rand_board()
         eval_ = stockfish_evaluation(board)
         x = np.append(convert_board(board).reshape(-1), [eval_]) #first 512 cols are x, then y 
@@ -76,7 +82,9 @@ def get_data():
 
     df = pd.DataFrame(data_list)
 
-    stockfish_data = df.to_csv('Data/stockfish_depth0b.csv', index = False, header = False) 
+    stockfish_data = df.to_csv('Data/stockfish_depth0d.csv', index = False, header = False) 
 
-get_data()
-print('DONE')
+
+if __name__ == "__main__":
+    get_data()
+    print('DONE')
