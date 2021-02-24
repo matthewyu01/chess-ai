@@ -10,7 +10,7 @@ ALL_SQUARES = chess.SquareSet(chess.BB_ALL)
 
 def stockfish_evaluation(board, depth=0):
     info = STOCKFISH.analyse(board, chess.engine.Limit(depth=depth))
-    board_eval = info['score'].white().score(mate_score=100000)
+    board_eval = info['score'].white().score(mate_score=2000)
     return board_eval
 
 
@@ -48,27 +48,27 @@ def convert_board(board):
     for piece in chess.PIECE_TYPES: #piece is an int [1,6]
         for sqr in board.pieces(piece, chess.WHITE): #sqr is an int [0,63]
             r, c = convert_sqr(sqr)
-            board_rep[piece-1][r][c] = 1
+            board_rep[piece-1][r][c] = 0.5
         for sqr in board.pieces(piece, chess.BLACK): 
             r, c = convert_sqr(sqr)
-            board_rep[piece-1][r][c] = -1
+            board_rep[piece-1][r][c] = -0.5
 
     for sqr in ALL_SQUARES:
         if board.is_attacked_by(chess.WHITE, sqr):
             r, c = convert_sqr(sqr)
             num_atcks = len(board.attackers(chess.WHITE, sqr))
-            board_rep[6][r][c] = num_atcks
+            board_rep[6][r][c] = num_atcks/2
         if board.is_attacked_by(chess.BLACK, sqr):
             r, c = convert_sqr(sqr)
             num_atcks = len(board.attackers(chess.BLACK, sqr))
-            board_rep[7][r][c] = num_atcks
+            board_rep[7][r][c] = num_atcks/2
 
     return board_rep
 
 def get_data():
     data_list = []
 
-    for _ in range(1000):
+    for _ in range(2000):
         board = generate_rand_board()
         eval_ = stockfish_evaluation(board)
         x = np.append(convert_board(board).reshape(-1), [eval_]) #first 512 cols are x, then y 
@@ -76,7 +76,7 @@ def get_data():
 
     df = pd.DataFrame(data_list)
 
-    stockfish_data = df.to_csv('Data/stockfish_depth0a.csv', index = False, header = False) 
+    stockfish_data = df.to_csv('Data/stockfish_depth0b.csv', index = False, header = False) 
 
 get_data()
-print('Done')
+print('DONE')
