@@ -71,7 +71,7 @@ def convert_board(board):
     if board.turn == chess.WHITE:
         board_rep2 = np.append(board_rep.reshape(-1), [2]) #first 513 cols are x, then y 
     else: 
-        board_rep2 = np.append(board_rep.reshape(-1), [2]) 
+        board_rep2 = np.append(board_rep.reshape(-1), [-2]) 
     return board_rep2
 
 
