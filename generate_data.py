@@ -8,7 +8,7 @@ import random
 # https://python-chess.readthedocs.io/en/latest/
 # https://python-chess.readthedocs.io/en/latest/core.html
 
-STOCKFISH = chess.engine.SimpleEngine.popen_uci("Stockfish/stockfish_13_win_x64_bmi2")
+STOCKFISH = chess.engine.SimpleEngine.popen_uci("Engines/stockfish_13_win_x64_bmi2")
 ALL_SQUARES = chess.SquareSet(chess.BB_ALL)
 
 
@@ -68,11 +68,12 @@ def convert_board(board):
             r, c = convert_sqr(sqr)
             num_atcks = len(board.attackers(chess.BLACK, sqr))
             board_rep[7][r][c] = num_atcks/2
+        
 
     if board.turn == chess.WHITE:
-        board_rep2 = np.append(board_rep, np.ones((1,8,8)))
+        board_rep2 = np.append(board_rep.reshape(-1), [3])
     else:
-        board_rep2 = np.append(board_rep, np.ones((1,8,8)) * -1)
+        board_rep2 = np.append(board_rep.reshape(-1), [-3])
     return board_rep2
 
 
@@ -83,10 +84,8 @@ def get_data():
     for _ in range(20000):
         board = generate_rand_board()
         eval_ = stockfish_evaluation(board)
-        if board.turn == chess.WHITE:
-            x = np.append(convert_board(board).reshape(-1), [eval_]) #first 513 cols are x, then y 
-        else: 
-            x = np.append(convert_board(board).reshape(-1), [eval_]) 
+
+        x = np.append(convert_board(board), [eval_]) 
         data_list.append(x)
 
     df = pd.DataFrame(data_list)

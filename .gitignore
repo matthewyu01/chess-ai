@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 
 Stockfish/stockfish_13_win_x64_bmi2.exe
+Engines/lc0.exe
+Engines/stockfish_13_win_x64_bmi2.exe
