@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 import random
 
-
 # https://python-chess.readthedocs.io/en/latest/
 # https://python-chess.readthedocs.io/en/latest/core.html
 
