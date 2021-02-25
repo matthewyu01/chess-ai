@@ -20,7 +20,7 @@ def stockfish_evaluation(board, depth=0):
 
 def generate_rand_board():
     board = chess.Board()
-    moves = random.randint(1,90) #1-90 moves. don't want to confuse NN with endgame
+    moves = random.randint(1,80) #1-80 moves. don't want to confuse NN with endgame
 
     for _ in range(moves):
         potential_moves = list(board.legal_moves)
@@ -68,10 +68,11 @@ def convert_board(board):
             r, c = convert_sqr(sqr)
             num_atcks = len(board.attackers(chess.BLACK, sqr))
             board_rep[7][r][c] = num_atcks/2
+
     if board.turn == chess.WHITE:
-        board_rep2 = np.append(board_rep.reshape(-1), [2]) #first 513 cols are x, then y 
-    else: 
-        board_rep2 = np.append(board_rep.reshape(-1), [-2]) 
+        board_rep2 = np.append(board_rep, np.ones((1,8,8)))
+    else:
+        board_rep2 = np.append(board_rep, np.ones((1,8,8)) * -1)
     return board_rep2
 
 
@@ -79,18 +80,18 @@ def convert_board(board):
 def get_data():
     data_list = []
 
-    for _ in range(16000):
+    for _ in range(20000):
         board = generate_rand_board()
         eval_ = stockfish_evaluation(board)
         if board.turn == chess.WHITE:
-            x = np.append(convert_board(board).reshape(1), [eval_]) #first 513 cols are x, then y 
+            x = np.append(convert_board(board).reshape(-1), [eval_]) #first 513 cols are x, then y 
         else: 
             x = np.append(convert_board(board).reshape(-1), [eval_]) 
         data_list.append(x)
 
     df = pd.DataFrame(data_list)
 
-    stockfish_data = df.to_csv('Data/stockfish_depth0f.csv', index = False, header = False) 
+    stockfish_data = df.to_csv('Data/stockfish_depth0_9.csv', index = False, header = False) 
 
 
 if __name__ == "__main__":
